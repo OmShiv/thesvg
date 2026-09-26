@@ -1,5 +1,13 @@
 # thesvg
 
+## 3.3.9
+
+### Patch Changes
+
+- chore: land reviewed open PRs and icon requests ([#1161](https://github.com/glincker/thesvg/issues/1161))
+- Updated dependencies []:
+  - @thesvg/icons@3.3.9
+
 ## 3.3.8
 
 ### Patch Changes
