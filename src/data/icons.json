@@ -50602,6 +50602,23 @@
     "collection": "brands"
   },
   {
+    "slug": "dawarich",
+    "title": "Dawarich",
+    "aliases": [],
+    "hex": "4076BE",
+    "categories": [
+      "Self-Hosted",
+      "Software"
+    ],
+    "variants": {
+      "default": "/icons/dawarich/default.svg"
+    },
+    "license": "AGPL-3.0",
+    "url": "https://github.com/Freika/dawarich",
+    "dateAdded": "2026-09-26",
+    "collection": "brands"
+  },
+  {
     "slug": "dazhong-dianping",
     "title": "Dazhong Dianping",
     "aliases": [
@@ -97622,7 +97639,9 @@
       "Gaming"
     ],
     "variants": {
-      "default": "/icons/nowly/default.svg"
+      "default": "/icons/nowly/default.svg",
+      "light": "/icons/nowly/light.svg",
+      "dark": "/icons/nowly/dark.svg"
     },
     "license": "MIT",
     "url": "https://nowly.me/",
