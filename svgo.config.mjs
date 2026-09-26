@@ -11,6 +11,9 @@ export default {
           // source file has square width/height/viewBox, right after the
           // svgo.yml auto-commit ran. Keep viewBox always.
           removeViewBox: false,
+          // AGENTS.md requires a <title> with the brand name in every
+          // icon; SVGO 3's default preset strips it.
+          removeTitle: false,
         },
       },
     },
