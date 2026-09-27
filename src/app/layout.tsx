@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { MobileShell } from "@/components/mobile/mobile-shell";
 import { NotificationToasts } from "@/components/notification-toasts";
+import { CommandPalette } from "@/components/command-palette";
 import { StoreHydration } from "@/components/store-hydration";
 import { HeaderSkeleton, MobileHeaderSkeleton, ContentSkeleton } from "@/components/skeletons";
 import { getFormattedIconCount, getCollections } from "@/lib/icons";
@@ -183,6 +184,7 @@ export default function RootLayout({
             </MobileShell>
           </Suspense>
           <NotificationToasts post={latestPost} />
+          <CommandPalette />
         </ThemeProvider>
       </body>
     </html>
