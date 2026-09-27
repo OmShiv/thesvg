@@ -14,7 +14,6 @@ import { BookOpenText } from "@phosphor-icons/react/dist/ssr";
 import { Badge } from "@/components/ui/badge";
 import type { IconEntry } from "@/lib/icons";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
-import { useRecentsStore } from "@/lib/stores/recents-store";
 import { cn } from "@/lib/utils";
 import { categoryUrl } from "@/lib/categories";
 import { BrandGlow } from "@/components/icons/detail/brand-glow";
@@ -30,6 +29,7 @@ import { QualityScoreCard } from "@/components/icons/detail/quality-score-card";
 import { DownloadMenu } from "@/components/icons/detail/download-menu";
 import { OpenInEditorMenu } from "@/components/icons/detail/open-in-editor-menu";
 import { withUtm } from "@/lib/external-link";
+import { useRecentsStore } from "@/lib/stores/recents-store";
 import { IconFeedback } from "@/components/icons/detail/icon-feedback";
 
 // The preview already invites interaction with hover:scale-105, so a click
@@ -49,11 +49,13 @@ function PreviewCopyButton({
   activeVariant: string;
 }) {
   const [state, setState] = useState<"idle" | "copied" | "error">("idle");
+  const recordCopy = useRecentsStore((s) => s.recordCopy);
 
   const handleCopy = useCallback(async () => {
     if (!svgContent) return;
     try {
       await navigator.clipboard.writeText(svgContent);
+      recordCopy(slug, "svg");
       setState("copied");
       posthog.capture("icon_svg_copied", {
         slug,
@@ -64,7 +66,7 @@ function PreviewCopyButton({
       setState("error");
     }
     setTimeout(() => setState("idle"), 1600);
-  }, [svgContent, slug, activeVariant]);
+  }, [svgContent, slug, activeVariant, recordCopy]);
 
   const label =
     state === "copied"

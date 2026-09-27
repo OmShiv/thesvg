@@ -32,24 +32,27 @@ function markHandled(): void {
 export function StarPrompt() {
   const copied = useRecentsStore((s) => s.copied);
   const [visible, setVisible] = useState(false);
+  // Survives a failed storage write so closing never re-triggers the prompt.
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (visible || !shouldShowStarPrompt(copied, readHandled())) return;
+    if (visible || dismissed || !shouldShowStarPrompt(copied, readHandled())) return;
     const timer = setTimeout(() => setVisible(true), SHOW_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [copied, visible]);
+  }, [copied, visible, dismissed]);
 
   if (!visible) return null;
 
   const close = () => {
     markHandled();
+    setDismissed(true);
     setVisible(false);
   };
 
   return (
     <div
       role="status"
-      className="fixed bottom-6 left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-xl border border-border bg-card p-4 shadow-2xl"
+      className="fixed bottom-[calc(6rem+var(--safe-bottom))] left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 rounded-xl md:bottom-6 border border-border bg-card p-4 shadow-2xl"
     >
       <div className="flex items-start gap-3">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-500">
