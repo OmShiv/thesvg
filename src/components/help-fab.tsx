@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { X, MousePointerClick, Copy, Download, Search, Heart, Keyboard, Sparkles } from "lucide-react";
 
 function getTips(iconCount: string) {
@@ -51,7 +51,7 @@ function getTips(iconCount: string) {
 }
 
 export function HelpFab({ iconCount }: { iconCount: string }) {
-  const TIPS = getTips(iconCount);
+  const TIPS = useMemo(() => getTips(iconCount), [iconCount]);
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -93,7 +93,7 @@ export function HelpFab({ iconCount }: { iconCount: string }) {
       ),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [mounted]);
+  }, [mounted, TIPS]);
 
   return (
     <>

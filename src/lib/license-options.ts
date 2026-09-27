@@ -96,7 +96,7 @@ export const LICENSE_OPTIONS: readonly LicenseOption[] = [
   },
 ] as const;
 
-const OPTIONS_BY_ID = new Map<LicenseOptionId, LicenseOption>();
+const OPTIONS_BY_ID = new Map<string, LicenseOption>();
 for (const o of LICENSE_OPTIONS) {
   OPTIONS_BY_ID.set(o.id, o);
 }
