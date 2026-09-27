@@ -9,12 +9,13 @@
 </p>
 
 <p align="center">
-  <strong>7,400+ SVG icons. Brands, AWS, Azure, GCP, and more. Search, copy, ship.</strong>
+  <strong>The open SVG brand library. 7,400+ logos and cloud icons, free to search, copy, and ship.</strong>
 </p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/thesvg"><img src="https://img.shields.io/npm/v/thesvg?style=flat-square&color=F97316&label=npm" alt="npm" /></a>
   <a href="https://www.npmjs.com/package/thesvg"><img src="https://img.shields.io/npm/dm/thesvg?style=flat-square&color=F97316&label=downloads" alt="downloads" /></a>
+  <a href="https://www.npmjs.com/package/@thesvg/mcp-server"><img src="https://img.shields.io/npm/v/@thesvg/mcp-server?style=flat-square&color=F97316&label=MCP" alt="MCP server" /></a>
   <a href="https://www.jsdelivr.com/package/gh/glincker/thesvg"><img src="https://data.jsdelivr.com/v1/package/gh/glincker/thesvg/badge" alt="jsDelivr" /></a>
   <a href="https://github.com/glincker/thesvg/stargazers"><img src="https://img.shields.io/github/stars/glincker/thesvg?style=flat-square&label=stars" alt="stars" /></a>
   <a href="https://discord.gg/Ar5pcaZB99"><img src="https://img.shields.io/discord/829168897080557579?style=flat-square&logo=discord&logoColor=white&label=discord&color=5865F2" alt="Discord" /></a>
@@ -49,6 +50,27 @@
   <a href="https://thesvg.org">
     <img src="https://raw.githubusercontent.com/glincker/thesvg/main/public/og-image.png" alt="theSVG - 7,400+ SVG icons for developers" width="720" />
   </a>
+</p>
+
+
+<h3 align="center">Use it anywhere</h3>
+
+<table align="center">
+  <tr>
+    <td align="center"><a href="https://thesvg.org"><strong>Web</strong></a><br />Search and copy in the browser</td>
+    <td align="center"><a href="https://www.npmjs.com/package/@thesvg/react"><strong>React</strong></a>, <a href="https://www.npmjs.com/package/@thesvg/vue"><strong>Vue</strong></a>, <a href="https://www.npmjs.com/package/@thesvg/svelte"><strong>Svelte</strong></a><br />Tree-shakeable npm packages</td>
+    <td align="center"><a href="https://www.npmjs.com/package/@thesvg/cli"><strong>CLI</strong></a><br />Add icons from your terminal</td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.npmjs.com/package/@thesvg/mcp-server"><strong>MCP server</strong></a><br />Give AI editors your logos</td>
+    <td align="center"><a href="https://www.raycast.com/thegdsks/thesvg"><strong>Raycast</strong></a><br />macOS and Windows</td>
+    <td align="center"><a href="https://marketplace.visualstudio.com/items?itemName=glincker.thesvg"><strong>VS Code</strong></a><br />Insert icons in your editor</td>
+  </tr>
+</table>
+
+<p align="center">
+  Free and open source. If thesvg saves you time, a star helps other developers find it.<br />
+  <a href="https://github.com/glincker/thesvg"><img src="https://img.shields.io/badge/%E2%98%85%20Star%20thesvg%20on%20GitHub-F97316?style=for-the-badge" alt="Star thesvg on GitHub" /></a>
 </p>
 
 <br />
