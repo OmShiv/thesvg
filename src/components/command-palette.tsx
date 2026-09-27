@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { BookOpen, Clock, Copy, Folder, Plug, Upload } from "lucide-react";
 import {
   Command,
@@ -46,6 +46,7 @@ function actionIcon(action: PaletteAction) {
 
 export function CommandPalette() {
   const router = useRouter();
+  const pathname = usePathname();
   const open = useCommandPaletteStore((s) => s.open);
   const setOpen = useCommandPaletteStore((s) => s.setOpen);
   const toggle = useCommandPaletteStore((s) => s.toggle);
@@ -98,7 +99,12 @@ export function CommandPalette() {
     [setOpen],
   );
 
-  const { results: iconResults } = useIconSearch({
+  // Close on any route change so the dialog never lingers over the next page.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname, setOpen]);
+
+  const { results: iconResults, isLoading: iconsLoading } = useIconSearch({
     query: open ? query : "",
     source: "command_palette",
     limit: PALETTE_ICON_LIMIT,
@@ -162,7 +168,7 @@ export function CommandPalette() {
           placeholder="Search icons, categories, actions..."
         />
         <CommandList className="max-h-80">
-          <CommandEmpty>No results found.</CommandEmpty>
+          {!iconsLoading && <CommandEmpty>No results found.</CommandEmpty>}
 
           {isSearching && iconResults.length > 0 && (
             <CommandGroup heading="Icons">

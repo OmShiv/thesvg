@@ -18,7 +18,7 @@ export type PaletteAction =
 const NAVIGATE_ACTIONS: readonly PaletteAction[] = [
   { id: "submit", label: "Submit an icon", kind: "navigate", href: "/submit" },
   { id: "docs", label: "Read the docs", kind: "navigate", href: "/docs" },
-  { id: "integrations", label: "Browse integrations", kind: "navigate", href: "/integrations" },
+  { id: "integrations", label: "Browse integrations", kind: "navigate", href: "/extensions" },
 ];
 
 export function categoriesFromIcons(icons: readonly IconEntry[]): PaletteCategory[] {
