@@ -8,6 +8,7 @@ import posthog from "posthog-js";
 import type { IconEntry } from "@/lib/icons";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
+import { useRecentsStore } from "@/lib/stores/recents-store";
 import { formatSvg } from "@/lib/copy-formats";
 import { FORMAT_BUTTONS } from "./shared/icon-constants";
 import { cn } from "@/lib/utils";
@@ -39,6 +40,7 @@ export const IconCard = memo(function IconCard({
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
   const isFavorite = useFavoritesStore((s) => s.favorites.includes(icon.slug));
   const defaultCopyFormat = useSettingsStore((s) => s.defaultCopyFormat);
+  const recordCopy = useRecentsStore((s) => s.recordCopy);
 
   const handleHoverPrefetch = useCallback(() => {
     if (prefetchedSlug.current === icon.slug) return;
@@ -62,6 +64,7 @@ export const IconCard = memo(function IconCard({
         setCopied(true);
         setTimeout(() => setCopied(false), 1500);
       }
+      recordCopy(icon.slug, defaultCopyFormat);
       posthog.capture("icon_copied", {
         icon_slug: icon.slug,
         icon_title: icon.title,
@@ -70,7 +73,7 @@ export const IconCard = memo(function IconCard({
         categories: icon.categories,
       });
     },
-    [icon.variants.default, icon.slug, icon.title, icon.categories, defaultCopyFormat]
+    [icon.variants.default, icon.slug, icon.title, icon.categories, defaultCopyFormat, recordCopy]
   );
 
   const handleDownload = useCallback(

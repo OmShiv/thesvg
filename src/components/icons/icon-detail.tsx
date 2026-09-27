@@ -23,6 +23,7 @@ import type { IconEntry } from "@/lib/icons";
 import type { CopyFormat } from "@/lib/copy-formats";
 import { formatSvg } from "@/lib/copy-formats";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
+import { useRecentsStore } from "@/lib/stores/recents-store";
 import { cn } from "@/lib/utils";
 import { VARIANT_LABELS, FORMAT_BUTTONS } from "@/components/icons/shared/icon-constants";
 import { withUtm } from "@/lib/external-link";
@@ -42,6 +43,7 @@ const FORMAT_ICONS: Record<string, React.ReactNode> = {
 
 export function IconDetail({ icon, onClose }: IconDetailProps) {
   const [activeVariant, setActiveVariant] = useState("default");
+  const recordCopy = useRecentsStore((s) => s.recordCopy);
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
   const [svgContent, setSvgContent] = useState<string>("");
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
@@ -87,6 +89,7 @@ export function IconDetail({ icon, onClose }: IconDetailProps) {
       if (!icon || !svgContent) return;
       const text = formatSvg(svgContent, format, icon.slug, activeVariant);
       await navigator.clipboard.writeText(text);
+      recordCopy(icon.slug, format);
       setCopiedFormat(format);
       setTimeout(() => setCopiedFormat(null), 1500);
       posthog.capture("icon_format_copied", {
@@ -98,7 +101,7 @@ export function IconDetail({ icon, onClose }: IconDetailProps) {
         source: "quick_preview",
       });
     },
-    [icon, svgContent, activeVariant]
+    [icon, svgContent, activeVariant, recordCopy]
   );
 
   const handleDownload = useCallback(async () => {
