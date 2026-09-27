@@ -1,5 +1,11 @@
 # @thesvg/mcp-server
 
+## 0.8.3
+
+### Patch Changes
+
+- chore: land reviewed open PRs and icon requests ([#1161](https://github.com/glincker/thesvg/issues/1161))
+
 ## 0.8.2
 
 ### Patch Changes

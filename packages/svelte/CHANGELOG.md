@@ -1,5 +1,11 @@
 # @thesvg/svelte
 
+## 3.3.9
+
+### Patch Changes
+
+- chore: land reviewed open PRs and icon requests ([#1161](https://github.com/glincker/thesvg/issues/1161))
+
 ## 3.3.8
 
 ### Patch Changes
