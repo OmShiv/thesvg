@@ -62,3 +62,6 @@ Simulating with N=5000 icons, M=20 slugs:
 ## 2024-05-18 - Tuple Allocation Anti-Pattern in Maps
 **Learning:** Using `new Map(array.map((i) => [i.key, i]))` for large datasets in a React `useMemo` hook is a severe memory anti-pattern. This approach forces V8 to allocate a temporary intermediate array, and within that array, thousands of 2-element tuple arrays. For a 10,000-item array, this translates to 10,001 temporary array allocations which are immediately discarded, triggering aggressive garbage collection pauses on the JS thread.
 **Action:** Always initialize large maps using a single-pass `for` loop and `map.set()` to avoid intermediate array allocations.
+## 2024-05-18 - Tuple Allocation Anti-Pattern in Maps
+**Learning:** Using `new Map(array.map((i) => [i.key, i]))` for large datasets in a React `useMemo` hook is a severe memory anti-pattern. This approach forces V8 to allocate a temporary intermediate array, and within that array, thousands of 2-element tuple arrays. For a 10,000-item array, this translates to 10,001 temporary array allocations which are immediately discarded, triggering aggressive garbage collection pauses on the JS thread.
+**Action:** Always initialize large maps using a single-pass `for` loop and `map.set()` to avoid intermediate array allocations.
