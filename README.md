@@ -58,7 +58,7 @@
 <table align="center">
   <tr>
     <td align="center"><a href="https://thesvg.org"><strong>Web</strong></a><br />Search and copy in the browser</td>
-    <td align="center"><a href="https://www.npmjs.com/package/@thesvg/react"><strong>React, Vue, Svelte</strong></a><br />Tree-shakeable npm packages</td>
+    <td align="center"><a href="https://www.npmjs.com/package/@thesvg/react"><strong>React</strong></a>, <a href="https://www.npmjs.com/package/@thesvg/vue"><strong>Vue</strong></a>, <a href="https://www.npmjs.com/package/@thesvg/svelte"><strong>Svelte</strong></a><br />Tree-shakeable npm packages</td>
     <td align="center"><a href="https://www.npmjs.com/package/@thesvg/cli"><strong>CLI</strong></a><br />Add icons from your terminal</td>
   </tr>
   <tr>
