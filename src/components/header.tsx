@@ -228,10 +228,6 @@ export function Header({ collectionCounts }: HeaderProps) {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
       if (e.key === "Escape") {
         inputRef.current?.blur();
         setFocused(false);
