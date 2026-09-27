@@ -96,7 +96,10 @@ export const LICENSE_OPTIONS: readonly LicenseOption[] = [
   },
 ] as const;
 
-const OPTIONS_BY_ID = new Map(LICENSE_OPTIONS.map((o) => [o.id, o]));
+const OPTIONS_BY_ID = new Map<LicenseOptionId, LicenseOption>();
+for (const o of LICENSE_OPTIONS) {
+  OPTIONS_BY_ID.set(o.id, o);
+}
 
 /** The id sentinel that requires a free-text description. */
 export const OTHER_LICENSE_ID = "Other";

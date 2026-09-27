@@ -59,7 +59,10 @@ export interface IconEntry {
 const icons = iconsData as IconEntry[];
 
 // Pre-compute a Map for O(1) lookups by slug, avoiding repeated O(N) array.find calls
-const iconsBySlug = new Map<string, IconEntry>(icons.map((i) => [i.slug, i]));
+const iconsBySlug = new Map<string, IconEntry>();
+for (const i of icons) {
+  iconsBySlug.set(i.slug, i);
+}
 
 export function getAllIcons(): IconEntry[] {
   return icons;
