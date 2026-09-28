@@ -90,12 +90,9 @@ function processInline(text: string): string {
 
         // The browser will decode numeric character references in href attribute.
         // Decode them and strip control characters to prevent bypasses like &#106;avascript:
-        const decodeHtmlEntities = (str: string) => {
-          return str.replace(/&#(\d+);?/g, (_, dec) => String.fromCharCode(parseInt(dec, 10)))
-                    .replace(/&#x([0-9a-fA-F]+);?/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
-        };
-
-        const fullyDecoded = decodeHtmlEntities(unescapedHref);
+        const fullyDecoded = unescapedHref
+          .replace(/&#(\d{1,7});?/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+          .replace(/&#x([0-9a-fA-F]{1,6});?/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)));
         const stripped = fullyDecoded.replace(/[\x00-\x1F\x7F]/g, '');
 
         const normalizedHref = stripped.trim().toLowerCase();
