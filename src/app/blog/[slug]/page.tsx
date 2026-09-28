@@ -88,7 +88,17 @@ function processInline(text: string): string {
       (_match, label: string, href: string) => {
         const unescapedHref = href.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 
-        const normalizedHref = unescapedHref.trim().toLowerCase();
+        // The browser will decode numeric character references in href attribute.
+        // Decode them and strip control characters to prevent bypasses like &#106;avascript:
+        const decodeHtmlEntities = (str: string) => {
+          return str.replace(/&#(\d+);?/g, (_, dec) => String.fromCharCode(dec))
+                    .replace(/&#x([0-9a-fA-F]+);?/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+        };
+
+        const fullyDecoded = decodeHtmlEntities(unescapedHref);
+        const stripped = fullyDecoded.replace(/[\x00-\x1F\x7F]/g, '');
+
+        const normalizedHref = stripped.trim().toLowerCase();
 
         // Prevent javascript/data URIs (XSS vectors) by requiring an explicit allowlist
         if (
