@@ -62,3 +62,7 @@ Simulating with N=5000 icons, M=20 slugs:
 ## 2024-05-18 - Tuple Allocation Anti-Pattern in Maps
 **Learning:** Using `new Map(array.map((i) => [i.key, i]))` for large datasets in a React `useMemo` hook is a severe memory anti-pattern. This approach forces V8 to allocate a temporary intermediate array, and within that array, thousands of 2-element tuple arrays. For a 10,000-item array, this translates to 10,001 temporary array allocations which are immediately discarded, triggering aggressive garbage collection pauses on the JS thread.
 **Action:** Always initialize large maps using a single-pass `for` loop and `map.set()` to avoid intermediate array allocations.
+
+## 2024-05-18 - Scope of Single-Pass Loop Optimizations
+**Learning:** While replacing declarative native array methods (`.filter()`, `.map()`, `.entries()`) with single-pass imperative `for` loops is a highly effective optimization for large datasets (e.g., arrays of thousands of icons) by avoiding intermediate allocations and GC pauses, applying this exact same optimization to extremely small arrays (like the 26-letter `ALPHABET` or small constant UI lists) provides absolutely zero measurable performance benefit and unnecessarily sacrifices code readability.
+**Action:** When optimizing array operations, strictly restrict the use of manual single-pass `for` loops to large datasets where the allocation overhead is actually measurable in a hot path. Avoid applying this micro-optimization to small, fixed-size lists where readability should take precedence.

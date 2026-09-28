@@ -110,7 +110,15 @@ export function CommandPalette() {
     limit: PALETTE_ICON_LIMIT,
   });
 
-  const bySlug = useMemo(() => new Map(manifest.map((i) => [i.slug, i])), [manifest]);
+  const bySlug = useMemo(() => {
+    // ⚡ Bolt: Single-pass map initialization avoiding V8 tuple allocation overhead
+    const m = new Map<string, IconEntry>();
+    for (let i = 0; i < manifest.length; i++) {
+      const entry = manifest[i];
+      m.set(entry.slug, entry);
+    }
+    return m;
+  }, [manifest]);
   const categories = useMemo(() => categoriesFromIcons(manifest), [manifest]);
   const lastCopied = copied.length > 0 ? bySlug.get(copied[0].slug) : undefined;
 

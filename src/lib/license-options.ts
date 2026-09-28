@@ -96,7 +96,12 @@ export const LICENSE_OPTIONS: readonly LicenseOption[] = [
   },
 ] as const;
 
-const OPTIONS_BY_ID = new Map(LICENSE_OPTIONS.map((o) => [o.id, o]));
+// ⚡ Bolt: Initialize without throwing away intermediate tuples
+const OPTIONS_BY_ID = new Map<string, typeof LICENSE_OPTIONS[number]>();
+for (let i = 0; i < LICENSE_OPTIONS.length; i++) {
+  const o = LICENSE_OPTIONS[i];
+  OPTIONS_BY_ID.set(o.id, o);
+}
 
 /** The id sentinel that requires a free-text description. */
 export const OTHER_LICENSE_ID = "Other";
