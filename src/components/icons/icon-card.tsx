@@ -10,7 +10,7 @@ import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { useSettingsStore } from "@/lib/stores/settings-store";
 import { useRecentsStore } from "@/lib/stores/recents-store";
 import { formatSvg } from "@/lib/copy-formats";
-import { FORMAT_BUTTONS } from "./shared/icon-constants";
+import { FORMAT_BUTTONS, FORMAT_LABELS } from "./shared/icon-constants";
 import { cn } from "@/lib/utils";
 import { NewBadge } from "@/components/icons/new-badge";
 
@@ -219,7 +219,7 @@ export const IconCard = memo(function IconCard({
       >
         {copied && (
           <span className="animate-fade-in-up rounded-lg bg-foreground/90 px-3 py-1.5 text-xs font-medium text-background shadow-lg backdrop-blur-sm">
-            {FORMAT_BUTTONS.find((f) => f.value === defaultCopyFormat)?.label || defaultCopyFormat.toUpperCase()} copied!
+            {FORMAT_LABELS.get(defaultCopyFormat) || defaultCopyFormat.toUpperCase()} copied!
           </span>
         )}
       </div>
@@ -279,7 +279,7 @@ export const IconCard = memo(function IconCard({
         <button
           type="button"
           onClick={handleCopy}
-          aria-label={copied ? `${icon.title} ${FORMAT_BUTTONS.find((f) => f.value === defaultCopyFormat)?.label || defaultCopyFormat.toUpperCase()} copied` : `Copy ${icon.title} ${FORMAT_BUTTONS.find((f) => f.value === defaultCopyFormat)?.label || defaultCopyFormat.toUpperCase()}`}
+          aria-label={copied ? `${icon.title} ${FORMAT_LABELS.get(defaultCopyFormat) || defaultCopyFormat.toUpperCase()} copied` : `Copy ${icon.title} ${FORMAT_LABELS.get(defaultCopyFormat) || defaultCopyFormat.toUpperCase()}`}
           className="flex h-7 flex-1 items-center justify-center gap-1 rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           {copied ? (
