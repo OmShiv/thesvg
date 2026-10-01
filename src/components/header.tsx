@@ -8,7 +8,7 @@ import { ArrowRight, Binary, BookOpen, Braces, ChevronDown, Component, FileCode,
 import { TheSVGMark } from "@/components/icons/the-svg-mark";
 import { useTheme } from "next-themes";
 import { useSettingsStore } from "@/lib/stores/settings-store";
-import { FORMAT_BUTTONS } from "@/components/icons/shared/icon-constants";
+import { FORMAT_BUTTONS, FORMAT_LABELS } from "@/components/icons/shared/icon-constants";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -405,7 +405,7 @@ export function Header({ collectionCounts }: HeaderProps) {
                   <button
                     type="button"
                     onClick={() => { setQuery(""); setFocused(false); }}
-                    className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground"
+                    className="flex h-5 w-5 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     aria-label="Clear search"
                   >
                     <X className="h-3 w-3" />
@@ -797,7 +797,7 @@ export function Header({ collectionCounts }: HeaderProps) {
                     />
                   }
                 >
-                  <span className="text-[10px] uppercase font-bold">{FORMAT_BUTTONS.find(f => f.value === defaultCopyFormat)?.label || defaultCopyFormat}</span>
+                  <span className="text-[10px] uppercase font-bold">{FORMAT_LABELS.get(defaultCopyFormat) || defaultCopyFormat}</span>
                   <ChevronDown className="h-3 w-3 opacity-60" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64">

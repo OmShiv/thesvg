@@ -78,7 +78,10 @@ describe("actions", () => {
 
 describe("recents", () => {
   it("resolves viewed slugs and skips unknown ones", () => {
-    const bySlug = new Map(icons.map((i) => [i.slug, i]));
+    const bySlug = new Map<string, IconEntry>();
+    for (let i = 0; i < icons.length; i++) {
+      bySlug.set(icons[i].slug, icons[i]);
+    }
     const viewed = [
       { slug: "b", ts: 2 },
       { slug: "gone", ts: 1 },

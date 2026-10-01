@@ -25,7 +25,7 @@ import { formatSvg } from "@/lib/copy-formats";
 import { useFavoritesStore } from "@/lib/stores/favorites-store";
 import { useRecentsStore } from "@/lib/stores/recents-store";
 import { cn } from "@/lib/utils";
-import { VARIANT_LABELS, FORMAT_BUTTONS } from "@/components/icons/shared/icon-constants";
+import { VARIANT_LABELS, FORMAT_BUTTONS, FORMAT_LABELS } from "@/components/icons/shared/icon-constants";
 import { withUtm } from "@/lib/external-link";
 
 interface IconDetailProps {
@@ -372,7 +372,7 @@ export function IconDetail({ icon, onClose }: IconDetailProps) {
           <div className="border-t border-border/30 p-3 sm:p-4">
             <div className="sr-only" role="status" aria-live="polite">
               {copiedFormat
-                ? `${copiedFormat === "cli" ? "CLI command" : FORMAT_BUTTONS.find((f) => f.value === copiedFormat)?.label} copied`
+                ? `${copiedFormat === "cli" ? "CLI command" : FORMAT_LABELS.get(copiedFormat)} copied`
                 : ""}
             </div>
             <Link
