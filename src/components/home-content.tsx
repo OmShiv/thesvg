@@ -4,8 +4,9 @@ import { useMemo, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import posthog from "posthog-js";
-import { ArrowDownAZ, ArrowDownZA, ArrowUpDown, Clock, Grid3X3, LayoutGrid, X } from "lucide-react";
+import { ArrowDownAZ, ArrowDownZA, ArrowUpDown, Clock, Flame, Grid3X3, LayoutGrid, X } from "lucide-react";
 import { compareDateDesc, type Collection, type IconEntry } from "@/lib/icons";
+import { getPopularSlugs, getAllPopularSlugs } from "@/lib/popular-icons";
 import { loadIconsManifest, prefetchIconsManifest } from "@/lib/icons-manifest";
 import { Sidebar } from "@/components/layout/sidebar";
 import { IconGrid } from "@/components/icons/icon-grid";
@@ -20,13 +21,32 @@ import { hasCategoryLanding, slugifyCategory } from "@/lib/categories";
 import { MobileRecentsRow } from "@/components/mobile/mobile-recents-row";
 import { cn } from "@/lib/utils";
 
-const SORT_OPTIONS = ["default", "recent", "az", "za"] as const;
+const SORT_OPTIONS = ["default", "recent", "popular", "az", "za"] as const;
+
+const SORT_META: Record<typeof SORT_OPTIONS[number], { icon: typeof ArrowUpDown; label: string }> = {
+  default: { icon: ArrowUpDown, label: "Sort" },
+  az: { icon: ArrowDownAZ, label: "A-Z" },
+  za: { icon: ArrowDownZA, label: "Z-A" },
+  recent: { icon: Clock, label: "Recent" },
+  popular: { icon: Flame, label: "Popular" },
+};
 
 /**
  * Whether an icon matches the active category-name filter and/or category
  * search text. Pulled out of searchBase's useMemo so that hook stays a
  * simple loop-and-collect, keeping its cognitive complexity low.
  */
+/** Filters icons down to the curated popular list (scoped to a collection
+ * if one is active, otherwise every collection's list combined) and orders
+ * them by that curation, not alphabetically or by date. */
+function sortByPopular(icons: IconEntry[], collection: Collection | null): IconEntry[] {
+  const popularSlugs = collection ? getPopularSlugs(collection) : getAllPopularSlugs();
+  const order = new Map(popularSlugs.map((slug, i) => [slug, i]));
+  return icons
+    .filter((icon) => order.has(icon.slug))
+    .sort((a, b) => order.get(a.slug)! - order.get(b.slug)!);
+}
+
 function matchesCategoryFilters(
   icon: IconEntry,
   lowerCatParam: string | null,
@@ -85,6 +105,7 @@ export function HomeContent({ categoryCounts, count, recentIcons, collections, d
     }
   }, [searchParams, defaultCategory, router]);
   const sortParam = searchParams.get("sort");
+  const { icon: SortIcon, label: sortLabel } = SORT_META[(sortParam as typeof SORT_OPTIONS[number]) || "default"] ?? SORT_META.default;
   const viewParam = (searchParams.get("view") || "comfortable") as "compact" | "comfortable";
   const favoritesParam = searchParams.get("favorites") === "true";
   const collectionParam = (searchParams.get("collection") || defaultCollection || null) as Collection | null;
@@ -305,6 +326,8 @@ export function HomeContent({ categoryCounts, count, recentIcons, collections, d
           searched = [...searched].sort((a, b) => b.title.localeCompare(a.title));
         } else if (sortParam === "recent") {
           searched = [...searched].sort((a, b) => compareDateDesc(a.dateAdded, b.dateAdded));
+        } else if (sortParam === "popular") {
+          searched = sortByPopular(searched, collectionParam);
         }
         setFiltered(searched);
       }).catch((err: unknown) => {
@@ -320,6 +343,8 @@ export function HomeContent({ categoryCounts, count, recentIcons, collections, d
       result = [...result].sort((a, b) => b.title.localeCompare(a.title));
     } else if (sortParam === "recent") {
       result = [...result].sort((a, b) => compareDateDesc(a.dateAdded, b.dateAdded));
+    } else if (sortParam === "popular") {
+      result = sortByPopular(result, collectionParam);
     }
 
     setFiltered(result);
@@ -446,24 +471,8 @@ export function HomeContent({ categoryCounts, count, recentIcons, collections, d
                     onClick={handleSortCycle}
                     className="flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
                   >
-                    {sortParam === "az" ? (
-                      <ArrowDownAZ className="h-4 w-4" />
-                    ) : sortParam === "za" ? (
-                      <ArrowDownZA className="h-4 w-4" />
-                    ) : sortParam === "recent" ? (
-                      <Clock className="h-4 w-4" />
-                    ) : (
-                      <ArrowUpDown className="h-4 w-4" />
-                    )}
-                    <span className="hidden sm:inline">
-                      {sortParam === "az"
-                        ? "A-Z"
-                        : sortParam === "za"
-                          ? "Z-A"
-                          : sortParam === "recent"
-                            ? "Recent"
-                            : "Sort"}
-                    </span>
+                    <SortIcon className="h-4 w-4" />
+                    <span className="hidden sm:inline">{sortLabel}</span>
                   </button>
                 </div>
               </div>
