@@ -62,29 +62,45 @@ function serializeRecord(record: Record<string, string>): string {
 // Per-icon generators
 // ---------------------------------------------------------------------------
 
+/**
+ * The named exports of a per-icon module, in emission order, each paired
+ * with its JS literal. The ESM and CJS generators both render this list, so
+ * the two formats can't drift apart.
+ */
+function iconExports(
+  icon: RawIcon,
+  allVariants: Record<string, string>,
+  primary: string,
+): Array<[name: string, literal: string]> {
+  return [
+    ["slug", JSON.stringify(icon.slug)],
+    ["title", JSON.stringify(icon.title)],
+    ["hex", JSON.stringify(icon.hex ?? "")],
+    ["categories", serializeStringArray(icon.categories ?? [])],
+    ["aliases", serializeStringArray(icon.aliases ?? [])],
+    ["svg", `\`${escapeTpl(primary)}\``],
+    ["variants", serializeRecord(allVariants)],
+    ["license", JSON.stringify(icon.license ?? "")],
+    ["url", JSON.stringify(icon.url ?? "")],
+  ];
+}
+
 /** ESM module for one icon. `primary` is the SVG exported as `svg`. */
 export function generateEsm(
   icon: RawIcon,
   allVariants: Record<string, string>,
   primary: string,
 ): string {
+  const fields = iconExports(icon, allVariants, primary);
   return [
     `// @thesvg/icons - ${icon.title}`,
     `// Auto-generated. Do not edit.`,
     ``,
-    `export const slug = ${JSON.stringify(icon.slug)};`,
-    `export const title = ${JSON.stringify(icon.title)};`,
-    `export const hex = ${JSON.stringify(icon.hex ?? "")};`,
-    `export const categories = ${serializeStringArray(icon.categories ?? [])};`,
-    `export const aliases = ${serializeStringArray(icon.aliases ?? [])};`,
-    `export const svg = \`${escapeTpl(primary)}\`;`,
-    `export const variants = ${serializeRecord(allVariants)};`,
-    `export const license = ${JSON.stringify(icon.license ?? "")};`,
-    `export const url = ${JSON.stringify(icon.url ?? "")};`,
+    ...fields.map(([name, literal]) => `export const ${name} = ${literal};`),
     ``,
     // Anonymous on purpose: a local named after the slug would clash with the
     // export of the same name for slugs like "svg" or "url".
-    `export default { slug, title, hex, categories, aliases, svg, variants, license, url };`,
+    `export default { ${fields.map(([name]) => name).join(", ")} };`,
   ].join("\n");
 }
 
@@ -94,6 +110,7 @@ export function generateCjs(
   allVariants: Record<string, string>,
   primary: string,
 ): string {
+  const fields = iconExports(icon, allVariants, primary);
   return [
     `"use strict";`,
     `// @thesvg/icons -${icon.title}`,
@@ -101,26 +118,10 @@ export function generateCjs(
     ``,
     `Object.defineProperty(exports, "__esModule", { value: true });`,
     ``,
-    `exports.slug = ${JSON.stringify(icon.slug)};`,
-    `exports.title = ${JSON.stringify(icon.title)};`,
-    `exports.hex = ${JSON.stringify(icon.hex ?? "")};`,
-    `exports.categories = ${serializeStringArray(icon.categories ?? [])};`,
-    `exports.aliases = ${serializeStringArray(icon.aliases ?? [])};`,
-    `exports.svg = \`${escapeTpl(primary)}\`;`,
-    `exports.variants = ${serializeRecord(allVariants)};`,
-    `exports.license = ${JSON.stringify(icon.license ?? "")};`,
-    `exports.url = ${JSON.stringify(icon.url ?? "")};`,
+    ...fields.map(([name, literal]) => `exports.${name} = ${literal};`),
     ``,
     `exports.default = {`,
-    `  slug: exports.slug,`,
-    `  title: exports.title,`,
-    `  hex: exports.hex,`,
-    `  categories: exports.categories,`,
-    `  aliases: exports.aliases,`,
-    `  svg: exports.svg,`,
-    `  variants: exports.variants,`,
-    `  license: exports.license,`,
-    `  url: exports.url,`,
+    ...fields.map(([name]) => `  ${name}: exports.${name},`),
     `};`,
   ].join("\n");
 }
