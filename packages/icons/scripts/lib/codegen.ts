@@ -68,7 +68,6 @@ export function generateEsm(
   allVariants: Record<string, string>,
   primary: string,
 ): string {
-  const safe = toSafeIdentifier(icon.slug);
   return [
     `// @thesvg/icons - ${icon.title}`,
     `// Auto-generated. Do not edit.`,
@@ -83,8 +82,9 @@ export function generateEsm(
     `export const license = ${JSON.stringify(icon.license ?? "")};`,
     `export const url = ${JSON.stringify(icon.url ?? "")};`,
     ``,
-    `const ${safe} = { slug, title, hex, categories, aliases, svg, variants, license, url };`,
-    `export default ${safe};`,
+    // Anonymous on purpose: a local named after the slug would clash with the
+    // export of the same name for slugs like "svg" or "url".
+    `export default { slug, title, hex, categories, aliases, svg, variants, license, url };`,
   ].join("\n");
 }
 
@@ -127,7 +127,6 @@ export function generateCjs(
 
 /** Type declarations for one icon module. */
 export function generateDts(icon: RawIcon): string {
-  const safe = toSafeIdentifier(icon.slug);
   return [
     `// @thesvg/icons - ${icon.title}`,
     `// Auto-generated. Do not edit.`,
@@ -144,8 +143,10 @@ export function generateDts(icon: RawIcon): string {
     `export declare const license: string;`,
     `export declare const url: string;`,
     ``,
-    `declare const ${safe}: IconModule;`,
-    `export default ${safe};`,
+    // Same name tsc emits for a default export, so it can never clash with
+    // the slug-independent named exports above.
+    `declare const _default: IconModule;`,
+    `export default _default;`,
   ].join("\n");
 }
 
