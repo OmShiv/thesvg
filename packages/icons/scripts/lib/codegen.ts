@@ -154,13 +154,10 @@ export function generateDts(icon: RawIcon): string {
 // ---------------------------------------------------------------------------
 
 export function generateEsmBarrel(slugs: string[]): string {
-  const lines = [
-    `// @thesvg/icons`,
-    `// Auto-generated barrel. Do not edit.`,
-    ``,
-    `export type { IconModule, IconVariants } from "./types.js";`,
-    ``,
-  ];
+  // Runtime JS only: the IconModule/IconVariants type re-export lives in the
+  // .d.ts barrel. `export type` is TypeScript syntax, so emitting it here
+  // makes node and bundlers fail to parse index.js.
+  const lines = [`// @thesvg/icons`, `// Auto-generated barrel. Do not edit.`, ``];
   for (const slug of slugs) {
     // named default re-export: import { default as github } from "./github.js"
     lines.push(`export { default as ${toSafeIdentifier(slug)} } from "./${slug}.js";`);
