@@ -5,7 +5,19 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { generateDtsBarrel, generateEsm, generateEsmBarrel, type RawIcon } from "./codegen.ts";
+import ts from "typescript";
+
+import {
+  generateDts,
+  generateDtsBarrel,
+  generateEsm,
+  generateEsmBarrel,
+  generateTypesDeclaration,
+  type RawIcon,
+} from "./codegen.ts";
+
+/** Names every per-icon module exports. A slug equal to one of them must still work. */
+const EXPORT_NAMES = ["slug", "title", "hex", "categories", "aliases", "svg", "variants", "license", "url"];
 
 const SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 2h20v20H2z"/></svg>';
 
@@ -65,4 +77,54 @@ test("type barrel still re-exports the shared IconModule and IconVariants types"
     generateDtsBarrel(["github"]),
     /^export type \{ IconModule, IconVariants \} from "\.\/types\.js";$/m,
   );
+});
+
+test("per-icon ESM modules import even when the slug matches one of their export names", () => {
+  const slugs = [...EXPORT_NAMES, "github"];
+  const files: Record<string, string> = {};
+  for (const slug of slugs) files[`${slug}.js`] = generateEsm(fixtureIcon(slug), { default: SVG }, SVG);
+  const dir = writeDist(files);
+
+  const result = runEsm(
+    dir,
+    [
+      `const out = {};`,
+      `for (const slug of ${JSON.stringify(slugs)}) {`,
+      `  const mod = await import(\`./\${slug}.js\`);`,
+      `  out[slug] = mod.default.slug === slug && mod.svg === mod.default.svg;`,
+      `}`,
+      `console.log(JSON.stringify(out));`,
+    ].join("\n"),
+  );
+
+  assert.equal(result.status, 0, `importing per-icon modules failed:\n${result.stderr}`);
+  const out = JSON.parse(result.stdout) as Record<string, boolean>;
+  for (const slug of slugs) assert.ok(out[slug], `module for slug "${slug}" exported the wrong data`);
+});
+
+test("per-icon type declarations type-check even when the slug matches one of their export names", () => {
+  const slugs = [...EXPORT_NAMES, "github"];
+  const files: Record<string, string> = {
+    "types.d.ts": generateTypesDeclaration(),
+    "index.d.ts": generateDtsBarrel(slugs),
+    "consumer.ts": slugs
+      .map((slug, i) => `import icon${i}, { svg as svg${i} } from "./${slug}.js";\nexport const t${i}: string = icon${i}.title + svg${i};`)
+      .join("\n"),
+  };
+  for (const slug of slugs) files[`${slug}.d.ts`] = generateDts(fixtureIcon(slug));
+  const dir = writeDist(files);
+
+  const program = ts.createProgram([join(dir, "consumer.ts")], {
+    strict: true,
+    noEmit: true,
+    module: ts.ModuleKind.NodeNext,
+    moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    target: ts.ScriptTarget.ES2022,
+    types: [],
+  });
+  const errors = ts
+    .getPreEmitDiagnostics(program)
+    .map((d) => `${d.file?.fileName.replace(dir, "") ?? ""}: ${ts.flattenDiagnosticMessageText(d.messageText, "\n")}`);
+
+  assert.deepEqual(errors, []);
 });
