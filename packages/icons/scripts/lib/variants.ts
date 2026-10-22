@@ -13,6 +13,9 @@ import type { RawIcon } from "./codegen.ts";
  */
 export type SvgReader = (publicPath: string) => string;
 
+/** The only shape of path the build will read: /icons/<folder>/<file>.svg. */
+const ICON_PATH = /^\/icons\/(?!\.\.?\/)[\w.-]+\/(?!\.\.?\/)[\w.-]+\.svg$/;
+
 /** Variants tried first when picking the SVG exported as `svg`. */
 const PRIMARY_ORDER = ["default", "color", "mono", "light", "dark", "wordmark"];
 
@@ -34,7 +37,9 @@ export interface ResolvedSvgs {
 export function resolveSvgs(icon: Pick<RawIcon, "variants">, read: SvgReader): ResolvedSvgs {
   const variants: Record<string, string> = {};
   for (const [key, publicPath] of Object.entries(icon.variants)) {
-    const content = publicPath ? read(publicPath) : "";
+    // Anything else (traversal, other file types) could inline files from
+    // outside the icon set into the published package.
+    const content = publicPath && ICON_PATH.test(publicPath) ? read(publicPath) : "";
     if (content) variants[key] = content;
   }
 
