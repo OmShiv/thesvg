@@ -92,3 +92,24 @@ test("every catalog variant with a file on disk ends up in the built module", ()
   }
   assert.deepEqual(dropped, []);
 });
+
+test("never reads a variant path outside /icons/<folder>/<file>.svg", () => {
+  const requested: string[] = [];
+  const read: SvgReader = (publicPath) => {
+    requested.push(publicPath);
+    return "<svg/>";
+  };
+  const icon = {
+    slug: "acme",
+    variants: {
+      default: "/icons/acme/default.svg",
+      up: "/icons/../../package.json",
+      nested: "/icons/acme/../../../secret.svg",
+      notSvg: "/icons/acme/default.js",
+      outside: "/og-image.png",
+    },
+  };
+  const { variants } = resolveSvgs(icon, read);
+  assert.deepEqual(Object.keys(variants), ["default"]);
+  assert.deepEqual(requested, ["/icons/acme/default.svg"]);
+});
