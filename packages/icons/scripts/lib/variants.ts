@@ -23,20 +23,23 @@ export interface ResolvedSvgs {
   primary: string;
 }
 
-/** Read every variant of `icon` and pick its primary SVG. */
-export function resolveSvgs(icon: Pick<RawIcon, "slug" | "variants">, read: SvgReader): ResolvedSvgs {
+/**
+ * Read every variant of `icon` and pick its primary SVG.
+ *
+ * Each file comes from the variant's icons.json path. File names are not
+ * always the key (wordmarkLight -> wordmark-light.svg, default ->
+ * color.svg, or a dated folder), so rebuilding them from the key drops
+ * those variants.
+ */
+export function resolveSvgs(icon: Pick<RawIcon, "variants">, read: SvgReader): ResolvedSvgs {
   const variants: Record<string, string> = {};
-  for (const key of Object.keys(icon.variants)) {
-    const content = read(`/icons/${icon.slug}/${key}.svg`);
+  for (const [key, publicPath] of Object.entries(icon.variants)) {
+    const content = publicPath ? read(publicPath) : "";
     if (content) variants[key] = content;
   }
 
   const keys = [...PRIMARY_ORDER.filter((key) => key in icon.variants), ...Object.keys(icon.variants)];
-  let primary = "";
-  for (const key of keys) {
-    primary = read(`/icons/${icon.slug}/${key}.svg`);
-    if (primary) break;
-  }
+  const primary = keys.map((key) => variants[key]).find(Boolean) ?? "";
 
   return { variants, primary };
 }
