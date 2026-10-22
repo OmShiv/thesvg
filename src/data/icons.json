@@ -93548,7 +93548,8 @@
     "dateAdded": "2026-03-07",
     "collection": "brands",
     "guidelines": "https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks",
-    "family": "microsoft"
+    "family": "microsoft",
+    "supersedes": "microsoft-copilot-legacy"
   },
   {
     "slug": "microsoft-copilot-legacy",
