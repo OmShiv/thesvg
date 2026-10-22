@@ -99415,8 +99415,8 @@
       "dark": "/icons/nextera-energy/dark.svg",
       "light": "/icons/nextera-energy/light.svg",
       "wordmark": "/icons/nextera-energy/wordmark.svg",
-      "wordmarkLight": "/icons/nextera-energy/wordmark-light.svg",
-      "wordmarkDark": "/icons/nextera-energy/wordmark-dark.svg"
+      "wordmarkLight": "/icons/nextera-energy/wordmarkLight.svg",
+      "wordmarkDark": "/icons/nextera-energy/wordmarkDark.svg"
     },
     "license": "Unknown",
     "url": "https://www.nexteraenergy.com/",
